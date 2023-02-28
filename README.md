@@ -8,3 +8,5 @@ QSS没有box-shadow属性，直到看到了[Italink](https://github.com/Italink)
 控件的模式有NeumorphicMode_Normal：默认效果、NeumorphicMode_Inset：内嵌效果、NeumorphicMode_Ridge：边缘脊突效果。
 绘制阴影和高光的过程中，使用了QPainterPath和QPainter的组合模式来实现，同时qt_blurImage对生成的图像进行模糊处理，增加立体感。
 最终，绘制出来的图像是一个QImage，然后使用painter->drawImage绘制到外部widget上。
+
+<div align=center><img src="https://github.com/IPlayGenji6/Qt-Neumorphic/blob/main/qt_neumorphic.png"/></div>
