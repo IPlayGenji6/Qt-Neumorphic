@@ -10,3 +10,22 @@ QSS没有box-shadow属性，直到看到了[Italink](https://github.com/Italink)
 最终，绘制出来的图像是一个QImage，然后使用painter->drawImage绘制到外部widget上。
 
 <div align=center><img src="https://github.com/IPlayGenji6/Qt-Neumorphic/blob/main/qt_neumorphic.png"/></div>
+
+# 用法/API
+```c++
+Neumorphic* neum = new Neumorphic(Neumorphic::NeumorphicMode_Normal);
+pushButton->setGraphicsEffect(neum);
+```
+
+```c++
+qreal blurRadius() const { return m_blurRadius; }
+void setBlurRadius(qreal blurRadius) { m_blurRadius = blurRadius; updateBoundingRect(); }  //设置模糊半径
+qreal opacity() const { return m_opacity; }
+void setOpacity(qreal opacity) { m_opacity = opacity; updateBoundingRect(); }  //设置光影透明度
+QPoint offset() const { return m_offset; }
+void setOffset(int x, int y) { m_offset = QPoint(x, y); updateBoundingRect(); }  //设置光影偏移量
+QColor shadowColor() const {return m_shadowColor.toRgb(); }
+void setShadowColor(QColor color) {m_shadowColor = color.toRgb(); m_shadowColor.setAlpha(m_opacity); updateBoundingRect(); };  //设置阴影颜色
+QColor highlightColor() const {return m_highlightColor.toRgb(); }
+void setHighlightColor(QColor color) {m_highlightColor = color.toRgb(); m_highlightColor.setAlpha(m_opacity); updateBoundingRect(); }; //设置高光颜色
+```
