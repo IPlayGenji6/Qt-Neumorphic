@@ -40,7 +40,7 @@ QRectF Neumorphic::boundingRectFor(const QRectF& rect) const
     if (mode == NeumorphicMode_Normal)
         return rect.united(rect.translated(0, 0).adjusted(-m_blurRadius * wRatio, -m_blurRadius * hRatio, m_blurRadius * wRatio, m_blurRadius * hRatio));
     else if (mode == NeumorphicMode_Inset)
-        return rect.united(rect.translated(0, 0)); //united取两矩形并集
+        return rect.united(rect.translated(0, 0));
     else if (mode == NeumorphicMode_Ridge)
         return rect.united(rect.translated(0, 0).adjusted(-m_blurRadius * wRatio, -m_blurRadius * hRatio, m_blurRadius * wRatio, m_blurRadius * hRatio));
     else
@@ -50,11 +50,10 @@ QRectF Neumorphic::boundingRectFor(const QRectF& rect) const
 void Neumorphic::draw(QPainter *painter)
 {
     PixmapPadMode pxMode = PadToEffectiveBoundingRect;
-    QPoint pos; //pos = 外部widget在窗口中的位置
+    QPoint pos;
     const QPixmap px = sourcePixmap(Qt::DeviceCoordinates, &pos, pxMode);
     int pxWidth = px.width();
     int pxHeight = px.height();
-    px.save("../px.png");
 
     if (px.isNull())
             return;
@@ -102,7 +101,6 @@ void Neumorphic::draw(QPainter *painter)
         shadowPath.lineTo(0, pxHeight - m_offset.y()*2);
         shadowPainter.fillPath(shadowPath, QColor(255,0,0,255));
         shadowPainter.end();
-        shadow.save("../shadow.png");
 
         //画左上高光
         highlightPainter.begin(&highlight);
@@ -115,7 +113,6 @@ void Neumorphic::draw(QPainter *painter)
         highlightPath.lineTo(pxWidth, pxHeight);
         highlightPainter.fillPath(highlightPath, QColor(255,0,0,255));
         highlightPainter.end();
-        highlight.save("../highlight.png");
 
         //模糊方案2:先拼接光影到一张image上,再模糊image
         QImage blurShadowAndHighlightImage(shadow.size(), QImage::Format_ARGB32_Premultiplied);
@@ -126,11 +123,8 @@ void Neumorphic::draw(QPainter *painter)
         blurShadowAndHighlightPainter.drawImage(-m_offset, highlight);
         blurShadowAndHighlightImage.save("../splicing.png");
         qt_blurImage(blurShadowAndHighlightImage, m_blurRadius, true);
-        blurShadowAndHighlightImage.save("../final_blur.png");
         blurShadowAndHighlightPainter.end();
 
-        //    painter->drawImage(pos + offset, shadow);
-        //    painter->drawImage(pos - offset, highlight);
         painter->drawImage(pos, blurShadowAndHighlightImage);
 
         painter->drawPixmap(pos, px);
@@ -150,7 +144,6 @@ void Neumorphic::draw(QPainter *painter)
         shadowPainter.setCompositionMode(QPainter::CompositionMode_DestinationOut);
         shadowPainter.drawPixmap(m_offset, px);
         shadowPainter.end();
-        shadow.save("../shadow.png");
 
         //画右下高光
         highlightPainter.begin(&highlight);
@@ -165,8 +158,7 @@ void Neumorphic::draw(QPainter *painter)
         highlightPainter.setCompositionMode(QPainter::CompositionMode_DestinationOut);
         highlightPainter.drawPixmap(-m_offset, px);
         highlightPainter.end();
-        highlight.save("../highlight.png");
-
+        
         //模糊方案2:先拼接光影到一张image上,再模糊image
         QImage blurShadowAndHighlightImage(shadow.size(), QImage::Format_ARGB32_Premultiplied);
         blurShadowAndHighlightImage.setDevicePixelRatio(px.devicePixelRatioF());
@@ -185,7 +177,6 @@ void Neumorphic::draw(QPainter *painter)
         qt_blurImage(blurShadowAndHighlightImage, m_blurRadius, true);
         blurShadowAndHighlightPainter.setCompositionMode(QPainter::CompositionMode_DestinationIn);
         blurShadowAndHighlightPainter.drawImage(QPoint(0, 0), sourceShape);
-        blurShadowAndHighlightImage.save("../final_blur.png");
         blurShadowAndHighlightPainter.end();
 
         painter->drawPixmap(pos, px);
@@ -242,16 +233,15 @@ void Neumorphic::draw(QPainter *painter)
         int insetRectHeight = px.height() - 2*hRatio*m_blurRadius;
 
         shadow = QImage(QSize(insetRectWidth, insetRectHeight), QImage::Format_ARGB32_Premultiplied);
-//        shadow.setDevicePixelRatio(px.devicePixelRatioF());
+        shadow.setDevicePixelRatio(px.devicePixelRatioF());
         shadow.fill(0);
         shadowPainter.begin(&shadow);
         shadowPainter.setCompositionMode(QPainter::CompositionMode_Source);
         shadowPainter.drawPixmap(-wRatio*m_blurRadius, -hRatio*m_blurRadius, px);
         shadowPainter.end();
-        shadow.save("../littleShadow.png");
 
         highlight = QImage(QSize(insetRectWidth, insetRectHeight), QImage::Format_ARGB32_Premultiplied);
-//        shadow.setDevicePixelRatio(px.devicePixelRatioF());
+        shadow.setDevicePixelRatio(px.devicePixelRatioF());
         highlight.fill(0);
         highlightPainter.begin(&highlight);
         highlightPainter.setCompositionMode(QPainter::CompositionMode_Source);
@@ -271,7 +261,6 @@ void Neumorphic::draw(QPainter *painter)
         shadowPainter.setCompositionMode(QPainter::CompositionMode_DestinationOut);
         shadowPainter.drawPixmap(m_offset.x() - wRatio*m_blurRadius, m_offset.y() - hRatio*m_blurRadius, px);
         shadowPainter.end();
-        shadow.save("../shadow2.png");
 
         //画右下高光
         highlightPainter.begin(&highlight);
@@ -286,7 +275,6 @@ void Neumorphic::draw(QPainter *painter)
         highlightPainter.setCompositionMode(QPainter::CompositionMode_DestinationOut);
         highlightPainter.drawPixmap(-m_offset.x()- wRatio*m_blurRadius, -m_offset.y() - hRatio*m_blurRadius, px);
         highlightPainter.end();
-        highlight.save("../highlight2.png");
 
         //模糊方案2:先拼接光影到一张image上,再模糊image
         QImage blurShadowAndHighlightImage2(shadow.size(), QImage::Format_ARGB32_Premultiplied);
@@ -296,19 +284,16 @@ void Neumorphic::draw(QPainter *painter)
         QPoint shadowOffset(0, 0);
         blurShadowAndHighlightPainter2.drawImage(shadowOffset, shadow);
         blurShadowAndHighlightPainter2.drawImage(shadowOffset, highlight);
-        blurShadowAndHighlightImage2.save("../splicing2.png");
         QImage sourceShape(blurShadowAndHighlightImage2.size(), QImage::Format_ARGB32_Premultiplied);
         sourceShape.fill(0);
         shadowPainter.begin(&sourceShape);
         shadowPainter.setCompositionMode(QPainter::CompositionMode_Source);
         shadowPainter.drawPixmap(-wRatio*m_blurRadius, -hRatio*m_blurRadius, px);
         shadowPainter.end();
-        sourceShape.save("../sourceShape.png");
         qt_blurImage(blurShadowAndHighlightImage2, m_blurRadius, true);        
         blurShadowAndHighlightPainter2.setCompositionMode(QPainter::CompositionMode_DestinationIn);
         blurShadowAndHighlightPainter2.drawImage(QPoint(0, 0), sourceShape);
         blurShadowAndHighlightPainter2.end();
-        blurShadowAndHighlightImage2.save("../final_blur2.png");
 
         //图层3:内圈光影
         painter->drawImage(QPoint(pos.x() + wRatio*m_blurRadius, pos.y() + hRatio*m_blurRadius), blurShadowAndHighlightImage2);
