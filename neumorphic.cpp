@@ -121,7 +121,6 @@ void Neumorphic::draw(QPainter *painter)
         QPainter blurShadowAndHighlightPainter(&blurShadowAndHighlightImage);
         blurShadowAndHighlightPainter.drawImage(m_offset, shadow);
         blurShadowAndHighlightPainter.drawImage(-m_offset, highlight);
-        blurShadowAndHighlightImage.save("../splicing.png");
         qt_blurImage(blurShadowAndHighlightImage, m_blurRadius, true);
         blurShadowAndHighlightPainter.end();
 
@@ -167,7 +166,6 @@ void Neumorphic::draw(QPainter *painter)
         QPoint shadowOffset(0, 0);
         blurShadowAndHighlightPainter.drawImage(shadowOffset, shadow);
         blurShadowAndHighlightPainter.drawImage(shadowOffset, highlight);
-        blurShadowAndHighlightImage.save("../splicing.png");
         QImage sourceShape(blurShadowAndHighlightImage.size(), QImage::Format_ARGB32_Premultiplied);
         sourceShape.fill(0);
         shadowPainter.begin(&sourceShape);
