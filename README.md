@@ -1,5 +1,5 @@
 # 👀💻🎨 Qt-Neumorphic
-QSS没有box-shadow属性，直到看到了[Italink](https://github.com/Italink)大佬写的[QNeumorphism](https://github.com/Italink/QNeumorphism)，在调整参数时候发现blurRadius过大的时候阴影和高光会重合，导致光影混叠在一起，在此通过明暗交界线限制光影区域处理这一问题。
+QSS没有box-shadow属性，直到看到了[Italink](https://github.com/Italink)大佬写的[QNeumorphism](https://github.com/Italink/QNeumorphism)，在调整参数时候发现blurRadius过大的时候阴影和高光会重合，导致光影混叠在一起，在此通过限制高光和阴影的绘制区域处理这一问题。
 
 翻译一下代码：
 
